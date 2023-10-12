@@ -1,8 +1,6 @@
 package main
 
-import (
-	"zhongxite/t-template/cmd"
-)
+import "zhongxite/t-template/cmd"
 
 func main() {
 	/*
@@ -13,6 +11,7 @@ func main() {
 		redis：go get github.com/redis/go-redis/v9
 		jwt：go get github.com/golang-jwt/jwt/v5
 		文档导出导入：go get github.com/tealeg/xlsx
+		uuid：go get -u github.com/satori/go.uuid
 	*/
 	cmd.Start()
 	defer cmd.Clean()

@@ -32,5 +32,5 @@ func InitDB() (db *gorm.DB, err error) {
 }
 
 func CreateInitDB(db *gorm.DB) {
-	db.AutoMigrate(&models.User{}, &models.Role{})
+	db.AutoMigrate(&models.User{}, &models.Role{}, &models.Menus{})
 }

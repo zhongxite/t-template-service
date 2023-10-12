@@ -13,5 +13,6 @@ func InitRouter() {
 	UserRouter(api)
 	CommonRouter(api)
 	RoleRouter(api)
+	MenusRouter(api)
 	panic(r.Run(":" + config.ConfigRouter["host"].(string)))
 }

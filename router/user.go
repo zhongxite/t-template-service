@@ -14,7 +14,7 @@ func UserRouter(r *gin.RouterGroup) {
 	route.POST("/updateUserInfo", middleware.Auth(), service.UpdateUserInfo)
 	route.GET("/getUserList", middleware.Auth(), service.GetUserList)
 	route.POST("/deleteUser", middleware.Auth(), service.DeleteUser)
-	route.POST("/getUserRouter", middleware.Auth(), func(c *gin.Context) {
+	route.POST("/getUserRouter", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"code": 200,
 			"data": gin.H{
@@ -23,7 +23,7 @@ func UserRouter(r *gin.RouterGroup) {
 					"name":      "index",
 					"path":      "/index",
 					"icon":      "HomeFilled",
-					"component": "page/index/index",
+					"component": "view/index/index",
 					"meta": gin.H{
 						"title": "首页",
 					},

@@ -8,6 +8,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/redis/go-redis/v9 v9.0.5
+	github.com/satori/go.uuid v1.2.0
 	github.com/tealeg/xlsx v1.0.5
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.2
