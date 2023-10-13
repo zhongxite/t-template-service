@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"zhongxite/t-template/common"
@@ -11,18 +10,18 @@ import (
 func GetMenusList(c *gin.Context) {
 	data := make([]models.Menus, 0)
 	common.DB.Order("id").Find(&data)
-	smida := test1(data, 0)
+	smida := initMenusLit(data, 0)
 	c.JSON(200, gin.H{
 		"code": 200,
 		"data": smida,
 		"msg":  "获取成功",
 	})
 }
-func test1(stuAll []models.Menus, pid uint64) []models.InitMenusList {
+func initMenusLit(stuAll []models.Menus, pid uint64) []models.InitMenusList {
 	var goodArr []models.InitMenusList
 	for _, v := range stuAll {
 		if v.Pid == pid {
-			child := test1(stuAll, uint64(v.ID))
+			child := initMenusLit(stuAll, uint64(v.ID))
 			node := models.InitMenusList{
 				Model:     models.Model{ID: v.ID, Created: v.Created, Updated: v.Updated, Deleted: v.Deleted},
 				Type:      v.Type,
@@ -43,7 +42,7 @@ func test1(stuAll []models.Menus, pid uint64) []models.InitMenusList {
 	}
 	return goodArr
 }
-func AddMenus(c *gin.Context) {
+func MenusAddOrModify(c *gin.Context) {
 	data := &models.Menus{}
 	data.Name = c.PostForm("name")
 	if data.Name == "" {
@@ -61,10 +60,14 @@ func AddMenus(c *gin.Context) {
 		})
 		return
 	}
-	if c.PostForm("pid") != "" {
-		data.Pid, _ = strconv.ParseUint(c.PostForm("uppId"), 10, 0)
-	} else {
-		data.Pid = 0
+	var err error
+	data.Pid, err = strconv.ParseUint(c.PostForm("pid"), 10, 0)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code": 400,
+			"msg":  "上级菜单不可为空",
+		})
+		return
 	}
 	data.Path = c.PostForm("path")
 	if data.Path == "" {
@@ -100,18 +103,81 @@ func AddMenus(c *gin.Context) {
 	}
 	data.Title = c.PostForm("title")
 	data.Status = c.PostForm("status")
-	err := common.DB.Create(data).Error
-	fmt.Println(err, "================")
+	var resStr string
+	var errStr string
+	if c.PostForm("isChange") == "1" {
+		uintId, _ := strconv.Atoi(c.PostForm("id"))
+		data.ID = uint(uintId)
+		err = common.DB.Model(data).Updates(data).Error
+		resStr = "修改成功"
+		errStr = "修改失败"
+	} else {
+		err = common.DB.Create(data).Error
+		resStr = "新增成功"
+		errStr = "新增失败"
+	}
 	if err != nil {
 		c.JSON(200, gin.H{
 			"code": 400,
-			"msg":  "新增失败",
+			"msg":  errStr,
 			"err":  err,
 		})
 	} else {
 		c.JSON(200, gin.H{
 			"code": 200,
-			"msg":  "新增成功",
+			"msg":  resStr,
 		})
 	}
+}
+func DeleteMenus(c *gin.Context) {
+	id := c.PostForm("id")
+	if id == "" {
+		c.JSON(200, gin.H{
+			"code": 400,
+			"msg":  "id不可为空",
+		})
+		return
+	}
+	uintId, _ := strconv.Atoi(c.PostForm("id"))
+	data := &models.Menus{}
+	data.ID = uint(uintId)
+	count := common.DB.First(data).RowsAffected
+	if count == 0 {
+		c.JSON(200, gin.H{
+			"code": 400,
+			"msg":  "id不存在",
+		})
+		return
+	}
+	err := common.DB.Delete(data).Error
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code": 400,
+			"msg":  "删除失败",
+			"err":  err.Error(),
+		})
+		return
+	}
+	list := make([]models.Menus, 0)
+	count = common.DB.Where("pid = ?", uintId).Find(&list).RowsAffected
+	if count != 0 {
+		err := common.DB.Where("pid = ?", uintId).Delete(&list).Error
+		if err != nil {
+			c.JSON(200, gin.H{
+				"code": 400,
+				"msg":  "删除失败",
+			})
+		} else {
+			c.JSON(200, gin.H{
+				"code": 200,
+				"msg":  "删除成功",
+			})
+		}
+	} else {
+		c.JSON(200, gin.H{
+			"code": 200,
+			"msg":  "删除成功",
+		})
+	}
+
 }

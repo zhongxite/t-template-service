@@ -8,6 +8,8 @@ import (
 
 func MenusRouter(r *gin.RouterGroup) {
 	route := r.Group("/menu")
-	route.POST("/getMenusList", service.GetMenusList)
-	route.POST("/addMenus", middleware.Auth(), service.AddMenus)
+	route.POST("/getMenusList", middleware.Auth(), service.GetMenusList)
+	route.POST("/menusAddOrModify", middleware.Auth(), service.MenusAddOrModify)
+	route.POST("/deleteMenus", middleware.Auth(), service.DeleteMenus)
+
 }
