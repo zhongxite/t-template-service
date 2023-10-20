@@ -10,8 +10,7 @@ type User struct {
 	Email       string `json:"email" form:"email"`             // 邮箱
 	Status      uint8  `json:"status" form:"status"`           // 状态
 	AccountName string `json:"accountName" form:"accountName"` // 账号名
-	Role        int    `json:"role" form:"role"`               // 角色
-	Post        int    `json:"post" form:"post"`               // 岗位
+	Role        uint   `json:"role" form:"role"`               // 角色
 	Salt        string `json:"salt" form:"salt"`               // 随机字符串解密
 	LoginIp     string `json:"loginIp" form:"loginIp"`         // 最后登录ip
 	LoginTime   int64  `json:"loginTime" form:"loginTime"`     // 最后登录时间

@@ -11,5 +11,4 @@ func MenusRouter(r *gin.RouterGroup) {
 	route.POST("/getMenusList", middleware.Auth(), service.GetMenusList)
 	route.POST("/menusAddOrModify", middleware.Auth(), service.MenusAddOrModify)
 	route.POST("/deleteMenus", middleware.Auth(), service.DeleteMenus)
-
 }

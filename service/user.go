@@ -156,7 +156,6 @@ func Login(c *gin.Context) {
 
 func GetUserInfo(c *gin.Context) {
 	user, ok := c.Get("user")
-	data := user.(*models.User)
 	if !ok {
 		c.JSON(200, gin.H{
 			"code": 400,
@@ -164,6 +163,7 @@ func GetUserInfo(c *gin.Context) {
 		})
 		return
 	}
+	data := user.(*models.User)
 	c.JSON(200, gin.H{
 		"code": 200,
 		"data": gin.H{
@@ -174,6 +174,7 @@ func GetUserInfo(c *gin.Context) {
 			"name":        data.Name,
 			"phone":       data.Phone,
 			"sex":         data.Sex,
+			"role":        data.Role,
 		},
 		"msg": "获取成功",
 	})

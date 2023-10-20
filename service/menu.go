@@ -3,17 +3,50 @@ package service
 import (
 	"github.com/gin-gonic/gin"
 	"strconv"
+	"strings"
 	"zhongxite/t-template/common"
 	"zhongxite/t-template/models"
 )
 
 func GetMenusList(c *gin.Context) {
+	userJson, ok := c.Get("user")
+	if !ok {
+		c.JSON(200, gin.H{
+			"code": 400,
+			"msg":  "获取用户信息失败",
+		})
+		return
+	}
+	user := userJson.(*models.User)
+	if user.Role == 0 {
+		c.JSON(200, gin.H{
+			"code": 400,
+			"msg":  "获取失败",
+		})
+		return
+	}
+	role := &models.Role{}
+	role.ID = user.Role
+	err := common.DB.First(role).Error
+	if err != nil || role.MenusList == "" {
+		c.JSON(200, gin.H{
+			"code": 400,
+			"msg":  "获取失败",
+		})
+		return
+	}
 	data := make([]models.Menus, 0)
-	common.DB.Order("id").Find(&data)
-	smida := initMenusLit(data, 0)
+	if user.Role == 1 {
+		common.DB.Order("id").Find(&data)
+	} else {
+		arr := strings.Split(role.MenusList, ",")
+		common.DB.Where("id IN ?", arr).Order("id").Find(&data)
+	}
+	
+	list := initMenusLit(data, 0)
 	c.JSON(200, gin.H{
 		"code": 200,
-		"data": smida,
+		"data": list,
 		"msg":  "获取成功",
 	})
 }
@@ -102,7 +135,16 @@ func MenusAddOrModify(c *gin.Context) {
 		return
 	}
 	data.Title = c.PostForm("title")
-	data.Status = c.PostForm("status")
+	status, err := strconv.Atoi(c.PostForm("status"))
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code": 400,
+			"msg":  "状态有误~",
+			"err":  err.Error(),
+		})
+		return
+	}
+	data.Status = uint8(status)
 	var resStr string
 	var errStr string
 	if c.PostForm("isChange") == "1" {

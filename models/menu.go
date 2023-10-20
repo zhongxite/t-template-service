@@ -12,7 +12,7 @@ type Menus struct {
 	Icon      string `json:"icon" form:"icon"`           // 组件图标
 	Component string `json:"component" form:"component"` // 组件路径
 	Title     string `json:"title" form:"title"`         // 标题
-	Status    string `json:"status" form:"status"`       // 是否启动：0不启动1启动
+	Status    uint8  `json:"status" form:"status"`       // 是否启动：0不启动1启动
 }
 type InitMenusList struct {
 	Model
@@ -24,7 +24,7 @@ type InitMenusList struct {
 	Icon      string          `json:"icon" form:"icon"`           // 组件图标
 	Component string          `json:"component" form:"component"` // 组件路径
 	Meta      gin.H           `json:"meta" form:"meta"`           // meta对象
-	Status    string          `json:"status" form:"status"`       // 是否启动：0不启动1启动
+	Status    uint8           `json:"status" form:"status"`       // 是否启动：0不启动1启动
 	Children  []InitMenusList `json:"children" form:"children"`
 }
 
