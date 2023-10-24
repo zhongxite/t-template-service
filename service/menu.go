@@ -42,7 +42,7 @@ func GetMenusList(c *gin.Context) {
 		arr := strings.Split(role.MenusList, ",")
 		common.DB.Where("id IN ?", arr).Order("id").Find(&data)
 	}
-	
+
 	list := initMenusLit(data, 0)
 	c.JSON(200, gin.H{
 		"code": 200,

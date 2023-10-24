@@ -47,6 +47,16 @@ func CreateUser(c *gin.Context) {
 		})
 		return
 	}
+	role, err := strconv.Atoi(c.PostForm("role"))
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code": 400,
+			"msg":  "请选择所属角色~",
+			"err":  err.Error(),
+		})
+		return
+	}
+	user.Role = uint(role)
 	salt := string(rand.Int31())                       // 获取随机数
 	user.Password = utils.MakePassword(password, salt) // 使用md5加密密码
 	user.Salt = salt
