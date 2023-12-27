@@ -13,6 +13,7 @@ func main() {
 		文档导出导入：go get github.com/tealeg/xlsx
 		uuid：go get -u github.com/satori/go.uuid
 	*/
+	// 打包命令：CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build .
 	cmd.Start()
 	defer cmd.Clean()
 }
