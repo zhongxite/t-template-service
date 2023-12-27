@@ -4,8 +4,8 @@ import "github.com/gin-gonic/gin"
 
 var ConfigMysql = gin.H{
 	"name":     "root",
-	"password": "123",
-	"url":      "8.134.204.77",
+	"password": "123456",
+	"url":      "127.0.0.1",
 	"port":     "3306",
 	"dbName":   "t_template",
 }
